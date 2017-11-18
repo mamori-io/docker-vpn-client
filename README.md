@@ -1,4 +1,4 @@
-# docker-vpn-client
+ # docker-vpn-client
 
 VPN clients in docker. Now support pptp and openconect client.
 It starts a persist pptp tunnel and adds routing rules.
@@ -47,6 +47,20 @@ docker run --net=host \
            ) \
            --detach \
            gzm55/vpn-client openconnect [<openconnect-options>] <server-domain-or-ip>
+
+# openvpn
+docker run --net=host \
+           --privileged=true \
+           --device=/dev/net/tun \
+           --cap-add=NET_ADMIN \
+           --name openvpn-$VPN_SERVER \
+           --volume ca.crt:/etc/openvpn/ca.crt \
+           --volume client.crt:/etc/openvpn/client.crt \
+           --volume client.key:/etc/openvpn/client.key \
+           --volume vpn.conf:/etc/openvpn/vpn.conf \
+           --detach \
+           docker-vpn-client openvpn
+
 ```
 
 Accepted docker environment variables for vpn client:

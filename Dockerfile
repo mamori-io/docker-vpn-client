@@ -1,5 +1,5 @@
 FROM alpine:latest
-MAINTAINER James Z.M. Gao <gaozm55@gmail.com>
+MAINTAINER Daniel Parnell <daniel@automagic-software.com>
 
 ENV OC_VERSION=7.08
 
@@ -14,8 +14,9 @@ RUN set -ex \
                gnutls gnutls-utils iptables libev libintl \
                libnl3 libseccomp linux-pam lz4-libs openssl \
                libxml2 nmap-ncat socat openssh-client \
+               bash curl ip6tables iptables openvpn shadow  \
     && apk add --no-progress --virtual .openconnect-build-deps \
-               curl file g++ gnutls-dev gpgme gzip libev-dev \
+               file g++ gnutls-dev gpgme gzip libev-dev \
                libnl3-dev libseccomp-dev libxml2-dev linux-headers \
                linux-pam-dev lz4-dev make readline-dev tar \
                sed readline procps \
