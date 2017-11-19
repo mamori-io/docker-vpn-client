@@ -14,7 +14,8 @@ RUN set -ex \
                gnutls gnutls-utils iptables libev libintl \
                libnl3 libseccomp linux-pam lz4-libs openssl \
                libxml2 nmap-ncat socat openssh-client \
-               bash curl ip6tables iptables openvpn shadow  \
+               bash curl ip6tables iptables openvpn shadow \
+               strongswan xl2tpd ppp \
     && apk add --no-progress --virtual .openconnect-build-deps \
                file g++ gnutls-dev gpgme gzip libev-dev \
                libnl3-dev libseccomp-dev libxml2-dev linux-headers \
@@ -39,6 +40,9 @@ RUN set -ex \
     && cd / \
 # 3. fix ip command location for the pptp client
     && ln -s "$(which ip)" /usr/sbin/ip \
+# 3.1 set things up for ipsec
+    && mkdir -p /var/run/xl2tpd \
+    && touch /var/run/xl2tpd/l2tp-control\
 # 4. cleanup
     && apk del .openconnect-build-deps \
     && rm -rf /var/cache/apk/* /tmp/* ~/.gnupg
