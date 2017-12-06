@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.6
 MAINTAINER Daniel Parnell <daniel@automagic-software.com>
 
 ENV OC_VERSION=7.08
