@@ -1,8 +1,6 @@
 FROM alpine:3.14
 MAINTAINER Daniel Parnell <dparnell@mamori.io>
 
-ENV OC_VERSION=8.10
-
 RUN set -ex \
 # 1. install pptpclient
     && echo '@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories \
@@ -15,29 +13,11 @@ RUN set -ex \
                libnl3 libseccomp linux-pam lz4-libs openssl \
                libxml2 nmap-ncat socat openssh-client \
                bash curl ip6tables iptables openvpn shadow \
-               strongswan xl2tpd ppp \
-    && apk add --no-progress --virtual .openconnect-build-deps \
-               file g++ gnutls-dev gpgme gzip libev-dev \
-               libnl3-dev libseccomp-dev libxml2-dev linux-headers \
-               linux-pam-dev lz4-dev make readline-dev tar \
-               sed readline procps \
+               strongswan xl2tpd ppp openconnect\
 ## 2.2 download vpnc-script
     && mkdir -p /etc/vpnc \
     && curl https://gitlab.com/openconnect/vpnc-scripts/raw/master/vpnc-script -o /etc/vpnc/vpnc-script \
     && chmod 750 /etc/vpnc/vpnc-script \
-## 2.3 create build dir, download, verify and decompress OC package to build dir
-#    && gpg --recv-key 0x63762cda67e2f359 \
-    && mkdir -p /tmp/build/openconnect \
-    && curl -SL "ftp://ftp.infradead.org/pub/openconnect/openconnect-$OC_VERSION.tar.gz" -o /tmp/openconnect.tar.gz \
-    && curl -SL "ftp://ftp.infradead.org/pub/openconnect/openconnect-$OC_VERSION.tar.gz.asc" -o /tmp/openconnect.tar.gz.asc \
-#    && gpg --verify /tmp/openconnect.tar.gz.asc \
-    && tar -xf /tmp/openconnect.tar.gz -C /tmp/build/openconnect --strip-components=1 \
-## 2.4 build and install
-    && cd /tmp/build/openconnect \
-    && ./configure \
-    && make \
-    && make install \
-    && cd / \
 ## 2.5 install dependency packages for openconnect csd wrapper
     && apk add --no-progress bash curl xmlstarlet \
 # 3. fix ip command location for the pptp client
@@ -46,7 +26,6 @@ RUN set -ex \
     && mkdir -p /var/run/xl2tpd \
     && touch /var/run/xl2tpd/l2tp-control\
 # 4. cleanup
-    && apk del .openconnect-build-deps \
     && rm -rf /var/cache/apk/* /tmp/* ~/.gnupg
 
 COPY content /
