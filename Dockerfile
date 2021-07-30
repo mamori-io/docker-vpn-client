@@ -1,7 +1,7 @@
-FROM alpine:3.6
-MAINTAINER Daniel Parnell <daniel@automagic-software.com>
+FROM alpine:3.14
+MAINTAINER Daniel Parnell <dparnell@mamori.io>
 
-ENV OC_VERSION=7.08
+ENV OC_VERSION=8.10
 
 RUN set -ex \
 # 1. install pptpclient
@@ -23,14 +23,14 @@ RUN set -ex \
                sed readline procps \
 ## 2.2 download vpnc-script
     && mkdir -p /etc/vpnc \
-    && curl http://git.infradead.org/users/dwmw2/vpnc-scripts.git/blob_plain/HEAD:/vpnc-script -o /etc/vpnc/vpnc-script \
+    && curl https://gitlab.com/openconnect/vpnc-scripts/raw/master/vpnc-script -o /etc/vpnc/vpnc-script \
     && chmod 750 /etc/vpnc/vpnc-script \
 ## 2.3 create build dir, download, verify and decompress OC package to build dir
-    && gpg --keyserver pgp.mit.edu --recv-key 0x63762cda67e2f359 \
+#    && gpg --recv-key 0x63762cda67e2f359 \
     && mkdir -p /tmp/build/openconnect \
     && curl -SL "ftp://ftp.infradead.org/pub/openconnect/openconnect-$OC_VERSION.tar.gz" -o /tmp/openconnect.tar.gz \
     && curl -SL "ftp://ftp.infradead.org/pub/openconnect/openconnect-$OC_VERSION.tar.gz.asc" -o /tmp/openconnect.tar.gz.asc \
-    && gpg --verify /tmp/openconnect.tar.gz.asc \
+#    && gpg --verify /tmp/openconnect.tar.gz.asc \
     && tar -xf /tmp/openconnect.tar.gz -C /tmp/build/openconnect --strip-components=1 \
 ## 2.4 build and install
     && cd /tmp/build/openconnect \
@@ -38,6 +38,8 @@ RUN set -ex \
     && make \
     && make install \
     && cd / \
+## 2.5 install dependency packages for openconnect csd wrapper
+    && apk add --no-progress bash curl xmlstarlet \
 # 3. fix ip command location for the pptp client
     && ln -s "$(which ip)" /usr/sbin/ip \
 # 3.1 set things up for ipsec
