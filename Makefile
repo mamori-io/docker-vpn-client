@@ -4,7 +4,7 @@ container:
 	sudo docker build -t mamori-vpn-client .
 
 run: container
-	sudo docker run -a stdin -a stdout -a stderr -i -t mamori-vpn-client
+	sudo docker run --rm -a stdin -a stdout -a stderr -i -t mamori-vpn-client sh
 
 tar: container
 	sudo docker save mamori-vpn-client | gzip > vpn-client.tgz
