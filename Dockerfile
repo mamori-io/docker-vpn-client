@@ -1,4 +1,4 @@
-FROM alpine:3.17
+FROM alpine:20230329
 MAINTAINER Daniel Parnell <dparnell@mamori.io>
 
 RUN set -ex \
