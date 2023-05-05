@@ -1,6 +1,7 @@
 all: tar
 
 container:
+	git rev-parse HEAD > content/.version
 	sudo docker build -t mamori-vpn-client .
 
 run: container
